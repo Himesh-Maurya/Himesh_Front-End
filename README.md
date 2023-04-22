@@ -1,70 +1,139 @@
-# Getting Started with Create React App
+1-Explain what the simple List component does
+List component renders the items array which is an array of object
+which has a text as string .
+Example:
+items=[
+   {
+       "text":"Raj" 
+   },
+   {
+    "text":"Pooja"
+   }
+]
+Its gets items array via props.then it stores the selected item index in 
+setSelectedIndex.
+we are passing onClickHandler,text,index,isSelected to renders the item
+of array with help of map on clicking the any item
+its color changes to green and all others to red.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+2-What problems / warnings are there with code?
+1)Problem-shapeOf is not a function 
+solution-we change the PropTypes.array to PropTypes.arrayOf and PropTypes.shapeOf to PropTypes.shape
+2)Problem-onClickHandler directly render when we render component without clicking button
+solution-onClickHandler should be call with anonymous function to prevent
+ it from being immediately called when the component is rendered.
+so we change onClick={onClickHandler(index)} to  onClick={() => onClickHandler(index)}
+3)Problem-setSelectedIndex is not a function
+solution-swap setSelectedIndex to selectedIndex, to make the variable name match the state it represents.
+and intialize with null . 
+so change  const [setSelectedIndex, selectedIndex] = useState() to const [selectedIndex,setSelectedIndex] = useState(null);
+4)Problem-child in a list should have unique property
+solution-provide key to map to distinguish the elements from others
+like-  key={index}
+5)Problem-isSelected expected to be boolean
+solution-isSelected take boolean value to change the color so we have to make it boolean
+so we change isSelected={selectedIndex} to isSelected={selectedIndex===index}
 
-## Available Scripts
+3-Please fix, optimize, and/or modify the component as much as you think is necessary.
+Install the dependency prop-types in your reactjs app
 
-In the project directory, you can run:
+IN List.js
 
-### `npm start`
+import React, { useState, useEffect, memo } from 'react';
+import PropTypes from 'prop-types';
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+// Single List Item
+const WrappedSingleListItem = ({
+  index,
+  isSelected,
+  onClickHandler,
+  text,
+}) => {
+  return (
+    <li
+      style={{ backgroundColor: isSelected ? 'green' : 'red'}}
+      //onClickHandler should be call with anonymous function to prevent it
+      // from being immediately called when the component is rendered.
+      onClick={() => onClickHandler(index)}
+    >
+      {text}
+    </li>
+  );
+};
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+WrappedSingleListItem.propTypes = {
+  index: PropTypes.number,
+  isSelected: PropTypes.bool,
+  onClickHandler: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
+};
 
-### `npm test`
+const SingleListItem = memo(WrappedSingleListItem);
+// List Component
+const WrappedListComponent = ({
+  items,
+}) => {
+ //write selectedIndex at its correct position and initialize with null
+const [selectedIndex,setSelectedIndex] = useState(null);
+  useEffect(() => {
+    setSelectedIndex(null);
+  }, [items]);
+  const handleClick = index => {
+    setSelectedIndex(index);
+  };
+  return (
+    <ul style={{ textAlign: 'left' }}>
+    {/* we provide key to map to distinguish the elements from others */}
+      {items.map((item, index) => (
+        <SingleListItem
+          onClickHandler={() => handleClick(index)}
+          key={index}
+          text={item.text}
+          index={index}
+          isSelected={selectedIndex===index}
+          // as isSelected is boolean so make it boolean equilizing with index
+        />
+      ))}
+    </ul>
+  )
+};
+//error replace shapeOf with shape for proper syntax as shapeOf is not a function
+//replace array with arrayOf
+WrappedListComponent.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string.isRequired,
+  })),
+};
+WrappedListComponent.defaultProps = {
+  items: null,
+};
+const List = memo(WrappedListComponent);
+export default List;
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+In App.js
 
-### `npm run build`
+import List from "./List";
+var items=[
+  {
+       "text":"Raj"
+       
+   },
+   {
+    "text":"Pooja"
+    
+}, {
+  "text":"Deep"
+  
+}
+]
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+function App() {
+  return (
+    <div className="App">
+      <List items={items}/>
+    </div>
+  );
+}
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+export default App;
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
