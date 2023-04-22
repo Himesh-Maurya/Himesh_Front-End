@@ -11,7 +11,9 @@ const WrappedSingleListItem = ({
   return (
     <li
       style={{ backgroundColor: isSelected ? 'green' : 'red'}}
-      onClick={onClickHandler(index)}
+       //onClickHandler should be call with anonymous function to prevent it
+      // from being immediately called when the component is rendered.
+      onClick={() => onClickHandler(index)}
     >
       {text}
     </li>
