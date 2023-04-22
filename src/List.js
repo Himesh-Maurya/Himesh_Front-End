@@ -54,7 +54,8 @@ const [selectedIndex,setSelectedIndex] = useState(null);
           key={index}
           text={item.text}
           index={index}
-          isSelected={selectedIndex}
+          isSelected={selectedIndex===index}
+          // as isSelected is boolean so make it boolean equilizing with index
         />
       ))}
     </ul>
