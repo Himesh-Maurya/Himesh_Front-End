@@ -33,7 +33,9 @@ const SingleListItem = memo(WrappedSingleListItem);
 const WrappedListComponent = ({
   items,
 }) => {
-  const [setSelectedIndex, selectedIndex] = useState();
+  //write selectedIndex at its correct position and initialize with null
+const [selectedIndex,setSelectedIndex] = useState(null);
+
 
   useEffect(() => {
     setSelectedIndex(null);
