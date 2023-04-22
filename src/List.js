@@ -47,9 +47,11 @@ const [selectedIndex,setSelectedIndex] = useState(null);
 
   return (
     <ul style={{ textAlign: 'left' }}>
+    {/* we provide key to map to distinguish the elements from others */}
       {items.map((item, index) => (
         <SingleListItem
           onClickHandler={() => handleClick(index)}
+          key={index}
           text={item.text}
           index={index}
           isSelected={selectedIndex}
