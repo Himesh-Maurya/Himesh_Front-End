@@ -54,9 +54,10 @@ const WrappedListComponent = ({
     </ul>
   )
 };
-
+//error replace shapeOf with shape for proper syntax as shapeOf is not a function
+//replace array with arrayOf
 WrappedListComponent.propTypes = {
-  items: PropTypes.array(PropTypes.shapeOf({
+  items: PropTypes.arrayOf(PropTypes.shape({
     text: PropTypes.string.isRequired,
   })),
 };
